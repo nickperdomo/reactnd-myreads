@@ -1,9 +1,10 @@
 import React from 'react'
-// import * as BooksAPI from './BooksAPI'
+import * as BooksAPI from './BooksAPI'
 import './App.css'
 
 class BooksApp extends React.Component {
   state = {
+    bookList: [],
     /**
      * TODO: Instead of using this state variable to keep track of which page
      * we're on, use the URL in the browser's address bar. This will ensure that
@@ -12,8 +13,20 @@ class BooksApp extends React.Component {
      */
     showSearchPage: false
   }
+  
+  componentDidMount() {
+    const bookList = BooksAPI.getAll()
+      .then( books => 
+        this.setState( () => ({
+          bookList: books
+        }))
+      );
+  }
 
   render() {
+
+    const bookPropertyTest = this.state.bookList.length && console.log(this.state.bookList[0].title);
+
     return (
       <div className="app">
         {this.state.showSearchPage ? (
