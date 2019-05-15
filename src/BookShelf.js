@@ -8,10 +8,10 @@ class BookShelf extends Component {
     const {shelfId, shelfBooks, shelfTitle} = this.props;
 
     return (
-      <div className="bookshelf">
+      <div id={shelfId} className="bookshelf">
         <h2 className="bookshelf-title">{shelfTitle}</h2>
         <div className="bookshelf-books">
-          <BookGrid shelfId={shelfId} shelfBooks={shelfBooks}/>
+          <BookGrid shelfBooks={shelfBooks}/>
         </div>
       </div>
     )
