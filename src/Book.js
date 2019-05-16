@@ -4,6 +4,7 @@ class Book extends Component {
   constructor(props) {
     super(props);
     this.bookData = props.bookData;
+    this.onMoveShelf = props.onMoveShelf;
     this.state = {
       shelf: this.bookData.shelf,
     }
@@ -13,6 +14,8 @@ class Book extends Component {
     this.setState(() => ({
       shelf: newShelf,
     }))
+    // console.log("BookData: ", this.bookData)
+    this.onMoveShelf(this.bookData, newShelf)
   }
 
 

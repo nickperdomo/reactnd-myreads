@@ -1,7 +1,7 @@
-import React from 'react'
-import * as BooksAPI from './BooksAPI'
-import './App.css'
-import BookShelf from './BookShelf.js'
+import React from "react";
+import * as BooksAPI from "./BooksAPI";
+import "./App.css";
+import BookShelf from "./BookShelf.js";
 
 class BooksApp extends React.Component {
   state = {
@@ -9,7 +9,7 @@ class BooksApp extends React.Component {
       all: [],
       wantToRead: [],
       currentlyReading: [],
-      read: [],
+      read: []
     },
     /**
      * TODO: Instead of using this state variable to keep track of which page
@@ -18,40 +18,68 @@ class BooksApp extends React.Component {
      * pages, as well as provide a good URL they can bookmark and share.
      */
     showSearchPage: false
-  }
+  };
 
   filterByShelf(booksData, shelfName) {
     const booksOnShelf = booksData.filter(book => book.shelf === shelfName);
     return booksOnShelf;
   }
 
+  handleMoveShelf(book, shelf) {
+    BooksAPI.update(book, shelf);
+    console.log(book);
+  }
+
+  // handleMoveShelf(book) {
+  //   if (book.shelf === "currentlyReading") {
+  //     this.setState((prevState) => ({
+  //       books: {
+  //         currentlyReading: prevState.books.currentlyReading.push(book)
+  //       }
+  //     }));
+  //   } else if (book.shelf === "wantToRead") {
+  //     this.setState((prevState) => ({
+  //       books: {
+  //         wantToRead: prevState.books.wantToRead.push(book)
+  //       }
+  //     }));
+  //   } else if (book.shelf === "read") {
+  //     this.setState((prevState) => ({
+  //       books: {
+  //         read: prevState.books.read.push(book)
+  //       }
+  //     }));
+  //   }
+  // }
+
   componentDidMount() {
-    BooksAPI.getAll()
-      .then(booksData =>
-        this.setState(() => ({
-          books: {
-            all: booksData,
-            currentlyReading: this.filterByShelf(booksData, 'currentlyReading'),
-            wantToRead: this.filterByShelf(booksData, 'wantToRead'),
-            read: this.filterByShelf(booksData, 'read'),
-          }
-        }))
-      );
+    BooksAPI.getAll().then(booksData =>
+      this.setState(() => ({
+        books: {
+          all: booksData,
+          currentlyReading: this.filterByShelf(booksData, "currentlyReading"),
+          wantToRead: this.filterByShelf(booksData, "wantToRead"),
+          read: this.filterByShelf(booksData, "read")
+        }
+      }))
+    );
   }
 
   render() {
-
     // const bookPropertyTest = this.state.books.all.length && console.log(this.state.books.read);
-    const {currentlyReading, wantToRead, read} = this.state.books;
+    const { currentlyReading, wantToRead, read } = this.state.books;
 
     return (
-     
-
       <div className="app">
         {this.state.showSearchPage ? (
           <div className="search-books">
             <div className="search-books-bar">
-              <button className="close-search" onClick={() => this.setState({ showSearchPage: false })}>Close</button>
+              <button
+                className="close-search"
+                onClick={() => this.setState({ showSearchPage: false })}
+              >
+                Close
+              </button>
               <div className="search-books-input-wrapper">
                 {/*
                   NOTES: The search from BooksAPI is limited to a particular set of search terms.
@@ -62,11 +90,10 @@ class BooksApp extends React.Component {
                   you don't find a specific author or title. Every search is limited by search terms.
                 */}
                 <input type="text" placeholder="Search by title or author" />
-
               </div>
             </div>
             <div className="search-books-results">
-              <ol className="books-grid"></ol>
+              <ol className="books-grid" />
             </div>
           </div>
         ) : (
@@ -76,19 +103,36 @@ class BooksApp extends React.Component {
               </header>
               <div className="list-books-content">
                 <div>
-                  <BookShelf shelfId="currentlyReading" shelfBooks={currentlyReading} shelfTitle="Currently Reading" ></BookShelf>
-                  <BookShelf shelfId="wantToRead" shelfBooks={wantToRead} shelfTitle="Want to Read" ></BookShelf>
-                  <BookShelf shelfId="read" shelfBooks={read} shelfTitle="Read" ></BookShelf>
+                  <BookShelf
+                    shelfId="currentlyReading"
+                    shelfBooks={currentlyReading}
+                    shelfTitle="Currently Reading"
+                    onMoveShelf={this.handleMoveShelf}
+                  />
+                  <BookShelf
+                    shelfId="wantToRead"
+                    shelfBooks={wantToRead}
+                    shelfTitle="Want to Read"
+                    onMoveShelf={this.handleMoveShelf}
+                  />
+                  <BookShelf
+                    shelfId="read"
+                    shelfBooks={read}
+                    shelfTitle="Read"
+                    onMoveShelf={this.handleMoveShelf}
+                  />
                 </div>
               </div>
               <div className="open-search">
-                <button onClick={() => this.setState({ showSearchPage: true })}>Add a book</button>
+                <button onClick={() => this.setState({ showSearchPage: true })}>
+                  Add a book
+              </button>
               </div>
             </div>
           )}
       </div>
-    )
+    );
   }
 }
 
-export default BooksApp
+export default BooksApp;

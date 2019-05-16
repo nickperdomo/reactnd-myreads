@@ -5,13 +5,18 @@ class BookShelf extends Component {
 
 
   render() {
-    const {shelfId, shelfBooks, shelfTitle} = this.props;
+    const {
+      shelfId,
+      shelfBooks,
+      shelfTitle,
+      onMoveShelf,
+    } = this.props;
 
     return (
       <div id={shelfId} className="bookshelf">
         <h2 className="bookshelf-title">{shelfTitle}</h2>
         <div className="bookshelf-books">
-          <BookGrid shelfBooks={shelfBooks}/>
+          <BookGrid shelfBooks={shelfBooks} onMoveShelf={onMoveShelf} />
         </div>
       </div>
     )

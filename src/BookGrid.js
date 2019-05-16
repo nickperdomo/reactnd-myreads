@@ -4,13 +4,16 @@ import Book from './Book';
 class BookGrid extends Component {
 
   render() {
-    const { shelfBooks } = this.props;
+    const {
+      shelfBooks,
+      onMoveShelf,
+    } = this.props;
     // console.log(shelfBooks);
 
-    const bookList = shelfBooks.map( bookData => {
+    const bookList = shelfBooks.map(bookData => {
       return (
         <li key={bookData.id}>
-          <Book bookData={bookData} />
+          <Book bookData={bookData} onMoveShelf={onMoveShelf} />
         </li>
       )
     })
