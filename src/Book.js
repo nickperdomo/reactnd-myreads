@@ -14,7 +14,6 @@ class Book extends Component {
     this.setState(() => ({
       shelf: newShelf,
     }))
-    // console.log("BookData: ", this.bookData)
     this.onMoveShelf(this.bookData, newShelf)
   }
 

@@ -5,12 +5,7 @@ import BookShelf from "./BookShelf.js";
 
 class BooksApp extends React.Component {
   state = {
-    books: {
-      all: [],
-      wantToRead: [],
-      currentlyReading: [],
-      read: []
-    },
+    books: [],
     /**
      * TODO: Instead of using this state variable to keep track of which page
      * we're on, use the URL in the browser's address bar. This will ensure that
@@ -20,54 +15,43 @@ class BooksApp extends React.Component {
     showSearchPage: false
   };
 
+  componentDidMount() {
+    BooksAPI.getAll().then(booksData => {
+      console.log(booksData)
+
+      this.setState(() => ({
+        books: booksData
+      }))
+
+    })
+  }
+
   filterByShelf(booksData, shelfName) {
     const booksOnShelf = booksData.filter(book => book.shelf === shelfName);
     return booksOnShelf;
   }
 
-  handleMoveShelf(book, shelf) {
-    BooksAPI.update(book, shelf);
-    console.log(book);
+  handleMoveShelf(movedBook, newShelf) {
+    BooksAPI.update(movedBook, newShelf).then(res => {
+      movedBook.shelf = newShelf;
+      this.setState(prevState => ({
+        books: prevState.books
+          .filter(book => book.id !== movedBook.id)
+          .concat(movedBook)
+      }));
+    })
+    console.log(movedBook);
   }
 
-  // handleMoveShelf(book) {
-  //   if (book.shelf === "currentlyReading") {
-  //     this.setState((prevState) => ({
-  //       books: {
-  //         currentlyReading: prevState.books.currentlyReading.push(book)
-  //       }
-  //     }));
-  //   } else if (book.shelf === "wantToRead") {
-  //     this.setState((prevState) => ({
-  //       books: {
-  //         wantToRead: prevState.books.wantToRead.push(book)
-  //       }
-  //     }));
-  //   } else if (book.shelf === "read") {
-  //     this.setState((prevState) => ({
-  //       books: {
-  //         read: prevState.books.read.push(book)
-  //       }
-  //     }));
-  //   }
-  // }
 
-  componentDidMount() {
-    BooksAPI.getAll().then(booksData =>
-      this.setState(() => ({
-        books: {
-          all: booksData,
-          currentlyReading: this.filterByShelf(booksData, "currentlyReading"),
-          wantToRead: this.filterByShelf(booksData, "wantToRead"),
-          read: this.filterByShelf(booksData, "read")
-        }
-      }))
-    );
-  }
+
 
   render() {
-    // const bookPropertyTest = this.state.books.all.length && console.log(this.state.books.read);
-    const { currentlyReading, wantToRead, read } = this.state.books;
+    const books = this.state.books;
+    const currentlyReading = this.filterByShelf(books, 'currentlyReading');
+    const wantToRead = this.filterByShelf(books, 'wantToRead');
+    const read = this.filterByShelf(books, 'read');
+
 
     return (
       <div className="app">
