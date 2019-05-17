@@ -1,5 +1,6 @@
 import React from "react";
-import { Link, Route } from "react-router-dom"
+import { Link, Route } from "react-router-dom";
+import serializeForm from 'form-serialize';
 import * as BooksAPI from "./BooksAPI";
 import "./App.css";
 import BookShelf from "./BookShelf.js";
@@ -7,7 +8,7 @@ import BookShelf from "./BookShelf.js";
 class BooksApp extends React.Component {
   state = {
     books: [],
-    showSearchPage: false
+    query: '',
   };
 
   componentDidMount() {
@@ -34,14 +35,21 @@ class BooksApp extends React.Component {
           .concat(movedBook)
       }));
     })
-    console.log(movedBook);
+  }
+
+  updateQuery = (target, query) => {
+    this.setState(() => ({
+      query: query.trim()
+    }))
+    // const values = serializeForm(target, { hash: true })
+    // console.log('Values: ', values)
   }
 
 
 
 
   render() {
-    const books = this.state.books;
+    const { books, query } = this.state;
     const currentlyReading = this.filterByShelf(books, 'currentlyReading');
     const wantToRead = this.filterByShelf(books, 'wantToRead');
     const read = this.filterByShelf(books, 'read');
@@ -68,7 +76,16 @@ class BooksApp extends React.Component {
                   However, remember that the BooksAPI.search method DOES search by title or author. So, don't worry if
                   you don't find a specific author or title. Every search is limited by search terms.
                 */}
-                <input type="text" placeholder="Search by title or author" />
+                <input
+                  name="search"
+                  type="text"
+                  placeholder="Search by title or author"
+                  value={query}
+                  onChange={(e) => {
+                    e.preventDefault();
+                    this.updateQuery(e.target, e.target.value)
+                  }}
+                />
               </div>
             </div>
             <div className="search-books-results">
@@ -114,6 +131,7 @@ class BooksApp extends React.Component {
             </Link>
           </div>
         )} />
+
       </div>
     );
   }
