@@ -7,6 +7,7 @@ class BookShelf extends Component {
   render() {
     const {
       shelfId,
+      allBooks,
       shelfBooks,
       shelfTitle,
       onMoveShelf,
@@ -16,7 +17,7 @@ class BookShelf extends Component {
       <div id={shelfId} className="bookshelf">
         <h2 className="bookshelf-title">{shelfTitle}</h2>
         <div className="bookshelf-books">
-          <BookGrid shelfBooks={shelfBooks} onMoveShelf={onMoveShelf} />
+          <BookGrid allBooks={allBooks} shelfBooks={shelfBooks} onMoveShelf={onMoveShelf} />
         </div>
       </div>
     )

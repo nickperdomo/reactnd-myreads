@@ -42,6 +42,7 @@ class BooksApp extends React.Component {
 
     if (query) {
       BooksAPI.search(query.trim()).then(results => {
+        console.log(results)
         results.length > 0
           ? this.setState(() => ({
               results: results,
@@ -100,7 +101,7 @@ class BooksApp extends React.Component {
             </div>
             <div className="search-books-results">
               {results.length > 0 && (
-                <BookGrid shelfBooks={results} onMoveShelf={this.handleMoveShelf} />
+                <BookGrid allBooks={books} shelfBooks={results} onMoveShelf={this.handleMoveShelf} />
               )}
               {queryError && (
                 <p>Sorry, no books including {`"${query}"`} were found.</p>
@@ -118,18 +119,21 @@ class BooksApp extends React.Component {
               <div>
                 <BookShelf
                   shelfId="currentlyReading"
+                  allBooks={books}
                   shelfBooks={currentlyReading}
                   shelfTitle="Currently Reading"
                   onMoveShelf={this.handleMoveShelf}
                 />
                 <BookShelf
                   shelfId="wantToRead"
+                  allBooks={books}
                   shelfBooks={wantToRead}
                   shelfTitle="Want to Read"
                   onMoveShelf={this.handleMoveShelf}
                 />
                 <BookShelf
                   shelfId="read"
+                  allBooks={books}
                   shelfBooks={read}
                   shelfTitle="Read"
                   onMoveShelf={this.handleMoveShelf}

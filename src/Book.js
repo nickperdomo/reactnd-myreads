@@ -5,9 +5,7 @@ class Book extends Component {
     super(props);
     this.bookData = props.bookData;
     this.onMoveShelf = props.onMoveShelf;
-    this.state = {
-      shelf: this.bookData.shelf,
-    }
+    this.state = { shelf: this.bookData.shelf };
   }
 
   updateShelf(newShelf) {
@@ -16,8 +14,6 @@ class Book extends Component {
     }))
     this.onMoveShelf(this.bookData, newShelf)
   }
-
-
 
 
   render() {
