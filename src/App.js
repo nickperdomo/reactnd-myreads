@@ -3,12 +3,15 @@ import { Link, Route } from "react-router-dom";
 import serializeForm from 'form-serialize';
 import * as BooksAPI from "./BooksAPI";
 import "./App.css";
+import BookGrid from "./BookGrid.js"
 import BookShelf from "./BookShelf.js";
 
 class BooksApp extends React.Component {
+
   state = {
     books: [],
     query: '',
+    results: [],
   };
 
   componentDidMount() {
@@ -21,10 +24,7 @@ class BooksApp extends React.Component {
     })
   }
 
-  filterByShelf(booksData, shelfName) {
-    const booksOnShelf = booksData.filter(book => book.shelf === shelfName);
-    return booksOnShelf;
-  }
+
 
   handleMoveShelf = (movedBook, newShelf) => {
     BooksAPI.update(movedBook, newShelf).then(res => {
@@ -41,18 +41,34 @@ class BooksApp extends React.Component {
     this.setState(() => ({
       query: query.trim()
     }))
+    BooksAPI.search(query).then(results => {
+      console.log(results);
+      this.setState(() => ({
+        results: results
+      }))
+    })
+
+
     // const values = serializeForm(target, { hash: true })
     // console.log('Values: ', values)
   }
 
+  filterByShelf(booksData, shelfName) {
+    const booksOnShelf = booksData.filter(book => book.shelf === shelfName);
+    return booksOnShelf;
+  }
 
 
 
   render() {
-    const { books, query } = this.state;
+    const { books, query, results } = this.state;
     const currentlyReading = this.filterByShelf(books, 'currentlyReading');
     const wantToRead = this.filterByShelf(books, 'wantToRead');
     const read = this.filterByShelf(books, 'read');
+
+    const searchResults = query === ''
+      ? <div>No query</div>
+      : <BookGrid shelfBooks={results} onMoveShelf={this.handleMoveShelf} />
 
 
     return (
@@ -89,7 +105,8 @@ class BooksApp extends React.Component {
               </div>
             </div>
             <div className="search-books-results">
-              <ol className="books-grid" />
+              {searchResults}
+              {/* <BookGrid shelfBooks={results} onMoveShelf={this.handleMoveShelf} /> */}
             </div>
           </div>
         )} />
