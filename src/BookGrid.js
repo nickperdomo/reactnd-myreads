@@ -18,6 +18,16 @@ class BookGrid extends Component {
       )
     })
 
+    // const bookList = shelfBooks.length > 0
+    //   ? shelfBooks.map(bookData => {
+    //       return (
+    //         <li key={bookData.id}>
+    //           <Book bookData={bookData} onMoveShelf={onMoveShelf} />
+    //         </li>
+    //       )
+    //     })
+    //   : <div>No results</div>
+
     return (
       <ol className="books-grid">
         {bookList}

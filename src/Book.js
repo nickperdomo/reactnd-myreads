@@ -22,11 +22,17 @@ class Book extends Component {
 
   render() {
     const bookData = this.bookData;
+    const authors = bookData.authors && bookData.authors.length > 1
+      ? bookData.authors.join(", ")
+      : `${bookData.authors}`;
+    const thumbnail = bookData.imageLinks && bookData.imageLinks.thumbnail
+      ? bookData.imageLinks.thumbnail
+      : "data:image/svg+xml;base64,PHN2ZyB4bWxucz0iaHR0cDovL3d3dy53My5vcmcvMjAwMC9zdmciIHZpZXdCb3g9IjAgMCAxMjggMTg4Ij48ZGVmcz48c3R5bGU+LmF7ZmlsbDojY2VjZWNlO308L3N0eWxlPjwvZGVmcz48dGl0bGU+dGh1bWJuYWlsPC90aXRsZT48cmVjdCBjbGFzcz0iYSIgd2lkdGg9IjEyOCIgaGVpZ2h0PSIxODgiLz48L3N2Zz4=";
 
     return (
       <div className="book">
         <div className="book-top">
-          <div className="book-cover" style={{ width: 128, height: 188, backgroundImage: `url(${bookData.imageLinks.thumbnail})` }}></div>
+          <div className="book-cover" style={{ width: 128, height: 188, backgroundImage: `url(${thumbnail})` }}></div>
           <div className="book-shelf-changer">
             <select value={this.state.shelf} onChange={(event) => this.updateShelf(event.target.value)}>
               <option value="move" disabled>Move to...</option>
@@ -38,7 +44,7 @@ class Book extends Component {
           </div>
         </div>
         <div className="book-title">{bookData.title}</div>
-        <div className="book-authors">{bookData.authors.join(", ")}</div>
+        <div className="book-authors">{authors}</div>
       </div>
     )
   }

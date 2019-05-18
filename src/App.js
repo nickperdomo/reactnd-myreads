@@ -1,6 +1,5 @@
 import React from "react";
 import { Link, Route } from "react-router-dom";
-import serializeForm from 'form-serialize';
 import * as BooksAPI from "./BooksAPI";
 import "./App.css";
 import BookGrid from "./BookGrid.js"
@@ -12,6 +11,7 @@ class BooksApp extends React.Component {
     books: [],
     query: '',
     results: [],
+    queryError: false,
   };
 
   componentDidMount() {
@@ -23,8 +23,6 @@ class BooksApp extends React.Component {
 
     })
   }
-
-
 
   handleMoveShelf = (movedBook, newShelf) => {
     BooksAPI.update(movedBook, newShelf).then(res => {
@@ -39,18 +37,27 @@ class BooksApp extends React.Component {
 
   updateQuery = (target, query) => {
     this.setState(() => ({
-      query: query.trim()
+      query: query
     }))
-    BooksAPI.search(query).then(results => {
-      console.log(results);
+
+    if (query) {
+      BooksAPI.search(query.trim()).then(results => {
+        results.length > 0
+          ? this.setState(() => ({
+              results: results,
+              queryError: false
+            }))
+          : this.setState(() => ({
+              results: [],
+              queryError: true
+            }))
+      })
+    } else {
       this.setState(() => ({
-        results: results
+        results: [],
+        queryError: false
       }))
-    })
-
-
-    // const values = serializeForm(target, { hash: true })
-    // console.log('Values: ', values)
+    }
   }
 
   filterByShelf(booksData, shelfName) {
@@ -61,16 +68,11 @@ class BooksApp extends React.Component {
 
 
   render() {
-    const { books, query, results } = this.state;
+    const { books, query, results, queryError } = this.state;
     const currentlyReading = this.filterByShelf(books, 'currentlyReading');
     const wantToRead = this.filterByShelf(books, 'wantToRead');
     const read = this.filterByShelf(books, 'read');
-
-    const searchResults = query === ''
-      ? <div>No query</div>
-      : <BookGrid shelfBooks={results} onMoveShelf={this.handleMoveShelf} />
-
-
+    
     return (
       <div className="app">
 
@@ -84,14 +86,6 @@ class BooksApp extends React.Component {
                 Close
               </Link>
               <div className="search-books-input-wrapper">
-                {/*
-                  NOTES: The search from BooksAPI is limited to a particular set of search terms.
-                  You can find these search terms here:
-                  https://github.com/udacity/reactnd-project-myreads-starter/blob/master/SEARCH_TERMS.md
-
-                  However, remember that the BooksAPI.search method DOES search by title or author. So, don't worry if
-                  you don't find a specific author or title. Every search is limited by search terms.
-                */}
                 <input
                   name="search"
                   type="text"
@@ -105,8 +99,12 @@ class BooksApp extends React.Component {
               </div>
             </div>
             <div className="search-books-results">
-              {searchResults}
-              {/* <BookGrid shelfBooks={results} onMoveShelf={this.handleMoveShelf} /> */}
+              {results.length > 0 && (
+                <BookGrid shelfBooks={results} onMoveShelf={this.handleMoveShelf} />
+              )}
+              {queryError && (
+                <p>Sorry, no books including {`"${query}"`} were found.</p>
+              )}
             </div>
           </div>
         )} />
@@ -138,7 +136,6 @@ class BooksApp extends React.Component {
                 />
               </div>
             </div>
-            {/* <div className="open-search"> */}
             <Link
               to='/search'
               className="open-search">
