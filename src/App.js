@@ -16,7 +16,6 @@ class BooksApp extends React.Component {
 
   componentDidMount() {
     BooksAPI.getAll().then(booksData => {
-      // console.log(booksData)
       this.setState(() => ({
         books: booksData
       }))
@@ -42,7 +41,6 @@ class BooksApp extends React.Component {
 
     if (query) {
       BooksAPI.search(query.trim()).then(results => {
-        console.log(results)
         results.length > 0
           ? this.setState(() => ({
               results: results,
@@ -77,13 +75,47 @@ class BooksApp extends React.Component {
     return (
       <div className="app">
 
+        {/* Main view */}
+        <Route exact path={"/"} render={() => (
+          <div className="list-books">
+            <header className="list-books-title">
+              <h1>MyReads</h1>
+            </header>
+            <div className="list-books-content">
+              <div>
+                <BookShelf
+                  allBooks={books}
+                  shelfBooks={currentlyReading}
+                  shelfTitle="Currently Reading"
+                  onMoveShelf={this.handleMoveShelf}
+                />
+                <BookShelf
+                  allBooks={books}
+                  shelfBooks={wantToRead}
+                  shelfTitle="Want to Read"
+                  onMoveShelf={this.handleMoveShelf}
+                />
+                <BookShelf
+                  allBooks={books}
+                  shelfBooks={read}
+                  shelfTitle="Read"
+                  onMoveShelf={this.handleMoveShelf}
+                />
+              </div>
+            </div>
+            <Link to='/search' className="open-search">
+              <button>
+                Add a book
+              </button>
+            </Link>
+          </div>
+        )} />
+
+        {/* Search view */}
         <Route path={"/search"} render={() => (
           <div className="search-books">
             <div className="search-books-bar">
-              <Link
-                to='/'
-                className="close-search"
-              >
+              <Link to='/' className="close-search">
                 Close
               </Link>
               <div className="search-books-input-wrapper">
@@ -101,7 +133,11 @@ class BooksApp extends React.Component {
             </div>
             <div className="search-books-results">
               {results.length > 0 && (
-                <BookGrid allBooks={books} shelfBooks={results} onMoveShelf={this.handleMoveShelf} />
+                <BookGrid
+                  allBooks={books}
+                  shelfBooks={results}
+                  onMoveShelf={this.handleMoveShelf} 
+                />
               )}
               {queryError && (
                 <p>Sorry, no books including {`"${query}"`} were found.</p>
@@ -109,47 +145,6 @@ class BooksApp extends React.Component {
             </div>
           </div>
         )} />
-
-        <Route exact path={"/"} render={() => (
-          <div className="list-books">
-            <header className="list-books-title">
-              <h1>MyReads</h1>
-            </header>
-            <div className="list-books-content">
-              <div>
-                <BookShelf
-                  shelfId="currentlyReading"
-                  allBooks={books}
-                  shelfBooks={currentlyReading}
-                  shelfTitle="Currently Reading"
-                  onMoveShelf={this.handleMoveShelf}
-                />
-                <BookShelf
-                  shelfId="wantToRead"
-                  allBooks={books}
-                  shelfBooks={wantToRead}
-                  shelfTitle="Want to Read"
-                  onMoveShelf={this.handleMoveShelf}
-                />
-                <BookShelf
-                  shelfId="read"
-                  allBooks={books}
-                  shelfBooks={read}
-                  shelfTitle="Read"
-                  onMoveShelf={this.handleMoveShelf}
-                />
-              </div>
-            </div>
-            <Link
-              to='/search'
-              className="open-search">
-              <button>
-                Add a book
-              </button>
-            </Link>
-          </div>
-        )} />
-
       </div>
     );
   }

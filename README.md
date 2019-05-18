@@ -10,6 +10,7 @@ To get started developing right away:
 
 * install all project dependencies with `npm install`
 * start the development server with `npm start`
+* search functionality is limited by [SEARCH_TERMS.md](SEARCH_TERMS.md)
 
 ## What You're Getting
 ```bash
